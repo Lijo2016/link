@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>🔗 Link Timer</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            background: #f2f2f7;
+        }
+
+        .container {
+            width: 360px;
+            padding: 30px;
+            background: white;
+            border-radius: 22px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 25px;
+            font-size: 28px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 18px;
+            border: 1px solid #d1d1d6;
+            border-radius: 11px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #007aff;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 11px;
+            background: #007aff;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #006edc;
+        }
+
+        #status {
+            margin-top: 18px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🔗 Link Timer</h1>
+
+    <label for="url">Link</label>
+    <input
+        id="url"
+        type="url"
+        placeholder="https://example.com"
+    >
+
+    <label for="time">Idő (másodperc)</label>
+    <input
+        id="time"
+        type="number"
+        min="1"
+        value="30"
+    >
+
+    <button onclick="openLink()">
+        🔗 Megnyitás
+    </button>
+
+    <div id="status"></div>
+
+</div>
+
+<script>
+function openLink() {
+
+    const url = document.getElementById("url").value;
+    const time = document.getElementById("time").value;
+    const status = document.getElementById("status");
+
+    if (!url) {
+        status.textContent = "Írj be egy linket!";
+        return;
+    }
+
+    if (!time || time < 1) {
+        status.textContent = "Adj meg egy időt!";
+        return;
+    }
+
+    /*
+     * Új lap megnyitása
+     */
+    const newTab = window.open(url, "_blank");
+
+    if (!newTab) {
+        status.textContent = "A böngésző blokkolta az új lapot.";
+        return;
+    }
+
+    let remaining = Number(time);
+
+    status.textContent =
+        "Megnyitva • " + remaining + " mp";
+
+    const timer = setInterval(() => {
+
+        remaining--;
+
+        status.textContent =
+            "Megnyitva • " + remaining + " mp";
+
+        if (remaining <= 0) {
+
+            clearInterval(timer);
+
+            /*
+             * Az új lap bezárása
+             */
+            newTab.close();
+
+            status.textContent = "A lap bezárva.";
+        }
+
+    }, 1000);
+}
+</script>
+
+</body>
+</html>
